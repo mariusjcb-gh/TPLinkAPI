@@ -10,7 +10,9 @@ except ImportError:
 with open('config.json') as data_file:    
     data = json.load(data_file)
 
-auth = 'Basic ' + base64.b64encode(data["Login"]["User"]+':'+data["Login"]["Password"])
+auth_str = data["Login"]["User"]+':'+data["Login"]["Password"]
+auth_bytes = auth_str.encode("utf-8")
+auth = 'Basic ' + base64.b64encode(auth_bytes).decode('utf-8')
 
 def makeRequest(url,heads):
     request = urllib2.Request(url, None, heads)
@@ -36,9 +38,9 @@ def addHostLan(Description,ipStart,ipEnd):
     return makeRequest(url,heads)
 
 def getTargetList(number):
-    url = 'http://' + IpRouter + '/userRpm/AccessCtrlAccessTargetsRpm.htm?Page='+str(number)
+    url = 'http://' + data["IpRouter"] + '/userRpm/AccessCtrlAccessTargetsRpm.htm?Page='+str(number)
     
-    heads = { 'Referer' : 'http://' + IpRouter + '/userRpm/AccessCtrlAccessTargetsRpm.htm',
+    heads = { 'Referer' : 'http://' + data["IpRouter"] + '/userRpm/AccessCtrlAccessTargetsRpm.htm',
              'Authorization' : auth
     }
 
@@ -124,9 +126,9 @@ def setIpDevice(ip,mask):
     return makeRequest(url,heads)
 
 def getHostList():
-    url = 'http://' + IpRouter + '/userRpm/AccessCtrlHostsListsRpm.htm?Refresh=Refresh'
+    url = 'http://' + data["IpRouter"] + '/userRpm/AccessCtrlHostsListsRpm.htm?Refresh=Refresh'
     
-    heads = { 'Referer' : 'http://' + IpRouter + '/userRpm/AccessCtrlHostsListsRpm.htm',
+    heads = { 'Referer' : 'http://' + data["IpRouter"] + '/userRpm/AccessCtrlHostsListsRpm.htm',
              'Authorization' : auth
     }
 
